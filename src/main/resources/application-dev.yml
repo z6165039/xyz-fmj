@@ -1,0 +1,24 @@
+logging:
+    file: jis-platform-fmj.log
+    level:
+          com.jis.platform.enrol: ERROR
+
+eureka:
+    instance:
+        statusPageUrlPath: /info
+        healthCheckUrlPath: /health
+        ip-address: 192.168.7.65
+        prefer-ip-address: true
+        lease-expiration-duration-in-seconds: 30
+        lease-renewal-interval-in-seconds: 10
+    client:
+        register-with-eureka: true
+        serviceUrl:
+           defaultZone: http://${EUREKA_HOST:192.168.7.65}:${EUREKA_PORT:8761}/eureka/
+
+
+#内部服务调用
+sdk:
+  url:
+    enterprise: 192.168.7.65:8763
+    backend: 192.168.7.65:8768

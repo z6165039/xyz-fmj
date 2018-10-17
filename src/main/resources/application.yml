@@ -1,0 +1,88 @@
+spring:
+    profiles:
+      active: dev
+    application:
+        name: xyz-fmj
+    jackson:
+        date-format: yyyy-MM-dd HH:mm:ss
+        time-zone: GMT+8
+        default-property-inclusion: non_null
+    datasource:
+        name: jis-platform-fmj-datasource
+        url: jdbc:mysql://192.168.7.38:3306/jis-platform-fmj?useAffectedRows=true&useUnicode=true&characterEncoding=UTF8
+        username: jis-platform-fmj
+        password: jis-platform-fmj
+        type: com.alibaba.druid.pool.DruidDataSource
+        driver-class-name: com.mysql.jdbc.Driver
+        filters: stat
+        maxActive: 20
+        initialSize: 1
+        maxWait: 60000
+        minIdle: 1
+        timeBetweenEvictionRunsMillis: 60000
+        minEvictableIdleTimeMillis: 300000
+        validationQuery: select 'x'
+        testWhileIdle: true
+        testOnBorrow: false
+        testOnReturn: false
+        poolPreparedStatements: true
+        maxOpenPreparedStatements: 20
+    rabbitmq:
+        host: 192.168.7.39
+        port: 5672
+        username: guest
+        password: guest
+    jmx:
+        enabled : false
+    http:
+        multipart:
+            max-file-size: 100Mb
+            max-request-size: 100Mb
+    redis:
+        host: 192.168.7.39
+        port: 6379
+        password:
+        timeout: 2000
+        database : 5
+mybatis:
+    basepackage: com.jis.platform.fmj.mapper
+    xmlLocation: classpath:mapper/**/*.xml
+
+server:
+    port: 8888
+
+swagger:
+    basepackage: com.jis.platform.fmj
+    service:
+        name: security admin
+
+
+logging:
+    file: jis-platform-fmj.log
+    level:
+          com.jis.platform.enrol: DEBUG
+
+qrcode:
+  create:
+    width: 300
+    height: 300
+    type: png
+    path: /home/juss/jis-platform-fmj/image/qrcode
+
+fdfs:
+  soTimeout: 1500
+  connectTimeout: 600
+  trackerList:            #TrackerList参数,支持多个
+    - 192.168.7.39:22122
+
+juss:
+    fastdfs:
+      webConetext: http://192.168.7.39:8888/
+    upload:
+      image:
+        maxNumber: 5
+        type: jpg,jpeg,gif,png,bmp
+        maxSize: 1048576
+
+platform:
+    url: http://192.178.7.61/fmj/sucess

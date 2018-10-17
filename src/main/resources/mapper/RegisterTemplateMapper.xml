@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jis.platform.fmj.mapper.RegisterTemplateMapper" >
+  <resultMap id="BaseResultMap" type="com.jis.platform.fmj.model.entity.EnrolTemplate" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="enterprise_id" property="enterpriseId" jdbcType="VARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="comment" property="comment" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="is_delete" property="isDelete" jdbcType="BIT" />
+    <result column="template" property="template" jdbcType="VARCHAR" />
+  </resultMap>
+
+
+  <resultMap id="templateDBQueryResponse" type="com.jis.platform.fmj.model.response.TemplateDBQueryResponse" >
+    <result column="sku_id" property="skuId" jdbcType="BIGINT" />
+    <result column="event_id" property="eventId" jdbcType="BIGINT" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="comment" property="comment" jdbcType="VARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="field_id" property="fieldId" jdbcType="BIGINT" />
+    <result column="sort_no" property="sortNo" jdbcType="INTEGER" />
+    <result column="max_length" property="maxLength" jdbcType="INTEGER" />
+    <result column="show_name" property="showName" jdbcType="VARCHAR" />
+    <result column="field_type_id" property="fieldTypeId" jdbcType="BIGINT" />
+    <result column="field_array" property="fieldArray" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    id, enterprise_id, name, title, comment, create_time,  update_time, is_delete, template
+  </sql>
+  
+  
+  <select id="selectByName" parameterType="java.lang.String" resultMap="BaseResultMap">
+    SELECT <include refid="Base_Column_List" /> FROM enrol_template t WHERE is_delete = 0
+    <if test="name != null">
+      AND t.name LIKE CONCAT('%', #{name}, '%')
+    </if>
+    <if test="enterpriseId != null and enterpriseId != 0">
+      AND t.enterprise_id = ${enterpriseId}
+    </if>
+  </select>
+
+
+  <select id="selectTemplateInfoBySkuId" parameterType="java.lang.Long" resultType="java.lang.String">
+      select t2.template
+      from enrol_product_normal_sku t1
+      left join enrol_template t2 on t2.id = t1.template_id
+      where t1.id = ${skuId}
+  </select>
+
+
+  <select id="selectFieldDataRel" parameterType="java.util.List" resultType="java.lang.String">
+       SELECT column_name FROM enrol_field_data_rel where  field_id in (
+        <foreach item="item" collection="ids" separator=",">
+          #{item,jdbcType=VARCHAR}
+        </foreach>
+       )
+       order by field(field_id,
+        <foreach item="item" collection="ids" separator=",">
+          #{item,jdbcType=VARCHAR}
+        </foreach>
+      )
+
+  </select>
+
+
+</mapper>

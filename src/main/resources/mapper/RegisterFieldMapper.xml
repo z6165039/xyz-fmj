@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jis.platform.fmj.mapper.RegisterFieldMapper">
+  <resultMap id="BaseResultMap" type="com.jis.platform.fmj.model.entity.EnrolField">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="field_type_id" jdbcType="BIGINT" property="fieldTypeId" />
+    <result column="enterprise_id" jdbcType="BIGINT" property="enterpriseId" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="field_array" jdbcType="VARCHAR" property="fieldArray" />
+    <result column="comment" jdbcType="VARCHAR" property="comment" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="is_delete" jdbcType="BIT" property="isDelete" />
+    <result column="system" jdbcType="BIT" property="system" />
+  </resultMap>
+
+  <resultMap id="FindListResultMap" type="com.jis.platform.fmj.model.response.FindListEnrolFieldResponse">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="field_type_id" jdbcType="BIGINT" property="fieldTypeId" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="field_array" jdbcType="VARCHAR" property="fieldArray" />
+    <result column="comment" jdbcType="VARCHAR" property="comment" />
+    <result column="field_type_name" jdbcType="VARCHAR" property="fieldTypeName" />
+    <result column="check_name" jdbcType="VARCHAR" property="checkName" />
+    <result column="system" jdbcType="BIT" property="system" />
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    id, enterprise_id, field_type_id, name, code, field_array, comment, create_time, system,
+    update_time,  is_delete
+  </sql>
+
+  <sql id="findList_Column_List">
+    t1.id, t1.field_type_id, t1.name, t1.code, t1.field_array, t1.comment,
+     t2.name as field_type_name, t2.check_name, t1.system
+  </sql>
+
+
+  <select id="countByCode" parameterType="java.lang.String" resultType="java.lang.Long">
+    SELECT COUNT(*) as total FROM enrol_field t WHERE system = 1 or(
+    <if test="code != null">
+      AND t.code = #{code}
+    </if>
+    <if test="enterpriseId != null and enterpriseId != 0">
+      AND t.enterprise_id = ${enterpriseId}
+    </if>
+    )
+  </select>
+
+
+
+  <select id="selectByNameAndType" parameterType="java.lang.String" resultMap="FindListResultMap">
+    SELECT <include refid="findList_Column_List" /> FROM enrol_field  t1
+    left join enrol_field_type t2 on t1.field_type_id = t2.id
+    WHERE   t1.system = 1
+    <if test="name != null">
+      AND t1.name LIKE CONCAT('%', #{name}, '%')
+    </if>
+    <if test="fieldTypeId != null and fieldTypeId != 0">
+      AND t1.field_type_id = ${fieldTypeId}
+    </if>
+    or (
+    t1.is_delete = 0
+    <if test="name != null">
+      AND t1.name LIKE CONCAT('%', #{name}, '%')
+    </if>
+    <if test="fieldTypeId != null and fieldTypeId != 0">
+      AND t1.field_type_id = ${fieldTypeId}
+    </if>
+    <if test="enterpriseId != null and enterpriseId != 0">
+      AND t1.enterprise_id = ${enterpriseId}
+    </if>
+    )
+  </select>
+
+    <delete id="deleteIds" parameterType="java.util.Set">
+        DELETE FROM  enrol_field WHERE id IN (
+        <foreach item="item" collection="datas" separator=",">
+            #{item,jdbcType=BIGINT}
+        </foreach>
+        )
+    </delete>
+
+    <select id="selectByIds" parameterType="java.util.Set" resultMap="FindListResultMap">
+        SELECT <include refid="Base_Column_List" />  FROM  enrol_field WHERE id IN (
+        <foreach item="item" collection="datas" separator=",">
+            #{item,jdbcType=BIGINT}
+        </foreach>
+        )
+    </select>
+
+</mapper>
