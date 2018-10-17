@@ -38,18 +38,12 @@ spring:
         multipart:
             max-file-size: 100Mb
             max-request-size: 100Mb
-    redis:
-        host: 192.168.7.39
-        port: 6379
-        password:
-        timeout: 2000
-        database : 5
 mybatis:
     basepackage: com.jis.platform.fmj.mapper
     xmlLocation: classpath:mapper/**/*.xml
 
 server:
-    port: 8888
+    port: 9999
 
 swagger:
     basepackage: com.jis.platform.fmj
