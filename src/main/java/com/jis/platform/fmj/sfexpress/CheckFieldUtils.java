@@ -23,7 +23,7 @@ public class CheckFieldUtils {
     /**
      * 正则表达式：验证汉字
      */
-    public static final String REGEX_CHINESE = "^[\u4e00-\u9fa5],{0,}$";
+    public static final String REGEX_CHINESE = "[\u4e00-\u9fa5]";
  
  
     /**
@@ -34,9 +34,10 @@ public class CheckFieldUtils {
     /**
      * 正则表达式：验证IP地址
      */
-    public static final String REGEX_IP_ADDR = "(25[0-5]|2[0-4]\\d|[0-1]\\d{2}|[1-9]?\\d)";
-    
-    public static final  String[] vi = { "1", "0", "X", "9", "8", "7", "6", "5", "4", "3", "2" };
+//    public static final String REGEX_IP_ADDR = "(25[0-5]|2[0-4]\\d|[0-1]\\d{2}|[1-9]?\\d)";
+	public static final String REGEX_IP_ADDR = "([1-9]|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])(\\.(\\d|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])){3}";
+
+	public static final  String[] vi = { "1", "0", "X", "9", "8", "7", "6", "5", "4", "3", "2" };
 
 	
 	/**
@@ -149,12 +150,19 @@ public class CheckFieldUtils {
     /**
      * 校验汉字
      * 
-     * @param chinese
+     * @param str
      * @return 校验通过返回true，否则返回false
      */
-    public static boolean isChinese(String chinese) {
-        return Pattern.matches(REGEX_CHINESE, chinese);
-    }
+	public static boolean isChinese(String str) {
+		String regEx = "[\u4e00-\u9fa5]";
+		Pattern pat = Pattern.compile(regEx);
+		Matcher matcher = pat.matcher(str);
+		boolean flg = false;
+		if (matcher.find())
+			flg = true;
+
+		return flg;
+	}
  
  
     /**
@@ -199,4 +207,9 @@ public class CheckFieldUtils {
         }
         return b;
     }
+
+    public static void main(String args[]){
+    	System.out.println(isIp("111.311.1.1"));
+		System.out.println(isIp("中俄"));
+	}
 }
